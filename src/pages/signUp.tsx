@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import Navbar from "@/components/Navbar";
+import { collection, doc, setDoc } from "@firebase/firestore";
 
 const Signup = () => {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -14,6 +16,11 @@ const Signup = () => {
   const handleSignup = async (e: React.FormEvent) => {
     if (!email || !password) {
       setErrorMessage("Email and password are required fields.");
+      return;
+    }
+
+    if (!name) {
+      setErrorMessage("Name is a required field.");
       return;
     }
 
@@ -31,7 +38,15 @@ const Signup = () => {
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("Success!");
       setSignupSuccess(true);
-      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
+
+      // Add user to the database
+      const userRef = doc(collection(db, "users"));
+      await setDoc(userRef, {
+        name,
+        email,
+      });
+      localStorage.setItem("user", JSON.stringify(name));
+
       setTimeout(() => {
         setSignupSuccess(false);
         router.push("/");
@@ -56,6 +71,18 @@ const Signup = () => {
           <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
 
           <form onSubmit={handleSignup}>
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-gray-700">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-700">
                 Email

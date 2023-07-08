@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase";
+import { auth, db, provider } from "../firebase";
 import Navbar from "@/components/Navbar";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "@firebase/firestore";
 
 const Login = () => {
   const router = useRouter();
@@ -30,8 +38,20 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setLoginSuccess(true);
-      console.log(auth.currentUser);
-      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
+
+      // Get user from the database
+      const usersCollection = collection(db, "users");
+      const userQuery = query(usersCollection, where("email", "==", email));
+      const querySnapshot = await getDocs(userQuery);
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          console.log("User credentials:", userData);
+          localStorage.setItem("user", JSON.stringify(userData.name));
+        });
+      }
+
       setTimeout(() => {
         setLoginSuccess(false);
         router.push("/");
@@ -46,8 +66,11 @@ const Login = () => {
     try {
       await signInWithPopup(auth, provider);
       setLoginSuccess(true);
-      console.log(auth.currentUser);
-      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(auth.currentUser?.displayName)
+      );
       setTimeout(() => {
         setLoginSuccess(false);
         router.push("/");
