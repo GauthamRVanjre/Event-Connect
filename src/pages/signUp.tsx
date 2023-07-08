@@ -30,6 +30,7 @@ const Signup = () => {
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("Success!");
       setSignupSuccess(true);
+      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
       setTimeout(() => {
         setSignupSuccess(false);
         router.push("/");

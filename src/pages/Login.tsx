@@ -29,6 +29,8 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setLoginSuccess(true);
+      console.log(auth.currentUser);
+      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
       setTimeout(() => {
         setLoginSuccess(false);
         router.push("/");
@@ -43,6 +45,8 @@ const Login = () => {
     try {
       await signInWithPopup(auth, provider);
       setLoginSuccess(true);
+      console.log(auth.currentUser);
+      localStorage.setItem("user", JSON.stringify(auth.currentUser?.email));
       setTimeout(() => {
         setLoginSuccess(false);
         router.push("/");
