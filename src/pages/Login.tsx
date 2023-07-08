@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
 
 const Login = () => {
   const router = useRouter();
@@ -36,6 +36,19 @@ const Login = () => {
     } catch (error) {
       setErrorMessage("Invalid email or password.");
       console.error("Error logging in:", error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      setLoginSuccess(true);
+      setTimeout(() => {
+        setLoginSuccess(false);
+        router.push("/");
+      }, 3000);
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
     }
   };
 
@@ -79,6 +92,13 @@ const Login = () => {
             className="w-full py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600"
           >
             Log In
+          </button>
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="mt-4 w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Sign In with Google
           </button>
           {errorMessage && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
