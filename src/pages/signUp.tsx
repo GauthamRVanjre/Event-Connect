@@ -1,41 +1,42 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Signup = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignup = async (e: React.FormEvent) => {
     if (!email || !password) {
-        setErrorMessage('Email and password are required fields.');
-        return;
-      }
-  
-      if (password.length < 6) {
-        setErrorMessage('Password should be at least 6 characters long.');
-        return;
-      }
-  
-      if (!validateEmail(email)) {
-        setErrorMessage('Email should be in a valid format.');
-        return;
-      }
+      setErrorMessage("Email and password are required fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage("Password should be at least 6 characters long.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMessage("Email should be in a valid format.");
+      return;
+    }
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      console.log('Success!');
+      console.log("Success!");
       setSignupSuccess(true);
       setTimeout(() => {
         setSignupSuccess(false);
-        router.push('/');
+        router.push("/");
       }, 3000);
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error("Error signing up:", error);
+      setErrorMessage("Error signing up. Please try again.");
     }
   };
 
@@ -45,15 +46,16 @@ const Signup = () => {
     return emailRegex.test(email);
   };
 
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm p-4 bg-white rounded shadow">
         <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-        
+
         <form onSubmit={handleSignup}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -63,7 +65,9 @@ const Signup = () => {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -78,16 +82,16 @@ const Signup = () => {
           >
             Sign Up
           </button>
-        {signupSuccess && (
-          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
-            Signup successful! Redirecting you to the Home page...
-          </div>
-        )}
-        {errorMessage && (
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
-            {errorMessage}
-          </div>
-        )}
+          {signupSuccess && (
+            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
+              Signup successful! Redirecting you to the Home page...
+            </div>
+          )}
+          {errorMessage && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
+              {errorMessage}
+            </div>
+          )}
         </form>
       </div>
     </div>
