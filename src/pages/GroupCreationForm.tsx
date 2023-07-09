@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import { auth, db } from "@/firebase";
 import { collection, doc, setDoc } from "@firebase/firestore";
 import { useRouter } from "next/router";
@@ -130,92 +131,101 @@ const GroupCreationForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-64"
-      >
-        <div className="mb-4">
-          <label
-            htmlFor="location"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Location:
-          </label>
-          <select
-            id="location"
-            value={location}
-            onChange={handleLocationChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          >
-            {Locations.map((location) => (
-              <option key={location} value={location}>
-                {location}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="tags" className="block text-gray-700 font-bold mb-2">
-            Tags:
-          </label>
-          {tags.map((tag) => (
-            <span
-              className="py-2 px-2 w-20 bg-gray-800 text-white rounded hover:bg-gray-600 mr-2"
-              key={tag}
-            >
-              {tag}
-            </span>
-          ))}
-          <select
-            id="tags"
-            value={tags}
-            onChange={handleTagsChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded mt-4"
-          >
-            {Tags.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
-            Name:
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Description:
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+    <>
+      <Navbar />
+      <div className="flex justify-center items-center h-screen">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-64"
         >
-          Create
-        </button>
-      </form>
-    </div>
+          <div className="mb-4">
+            <label
+              htmlFor="location"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Location:
+            </label>
+            <select
+              id="location"
+              value={location}
+              onChange={handleLocationChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            >
+              {Locations.map((location) => (
+                <option key={location} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="tags"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Tags:
+            </label>
+            {tags.map((tag) => (
+              <span
+                className="py-2 px-2 w-20 bg-gray-800 text-white rounded hover:bg-gray-600 mr-2"
+                key={tag}
+              >
+                {tag}
+              </span>
+            ))}
+            <select
+              id="tags"
+              value={tags}
+              onChange={handleTagsChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded mt-4"
+            >
+              {Tags.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Name:
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="description"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Create
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

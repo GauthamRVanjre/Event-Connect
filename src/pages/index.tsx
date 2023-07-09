@@ -2,6 +2,8 @@ import GroupCreationForm from "@/pages/GroupCreationForm";
 import Navbar from "@/components/Navbar";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Groups from "@/components/Groups";
+import { GetStaticPaths } from "next";
 
 export default function Home() {
   const [user, setUser] = useState<string | null>("guest");
@@ -26,7 +28,10 @@ export default function Home() {
       </div>
 
       <div className="flex py-10 px-4">
-        <div className="w-3/12 text-2xl">Your groups</div>
+        <div className="w-3/12 text-2xl">
+          Your Groups
+          <Groups />
+        </div>
         <div className="w-9/12 text-2xl">Browse Events</div>
       </div>
     </>
