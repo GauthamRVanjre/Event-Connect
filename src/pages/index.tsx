@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Groups from "@/components/Groups";
-import { GetStaticPaths } from "next";
+import Events from "@/components/Events";
 
 export default function Home() {
   const [user, setUser] = useState<string | null>("guest");
@@ -32,7 +32,10 @@ export default function Home() {
           Your Groups
           <Groups />
         </div>
-        <div className="w-9/12 text-2xl">Browse Events</div>
+        <div className="w-9/12 text-2xl">
+          Browse Events
+          <Events />
+        </div>
       </div>
     </>
   );
