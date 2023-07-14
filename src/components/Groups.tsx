@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { auth, db } from "@/firebase";
 import React, { useEffect, useState } from "react";
-import { collection, doc, getDocs, query, where } from "@firebase/firestore";
-import Image from "next/image";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+import Link from "next/link";
 
 const Groups = () => {
   interface Group {
@@ -53,32 +53,34 @@ const Groups = () => {
     <div className="flex flex-col">
       {groups.map((group) => {
         return (
-          <div
-            key={group.id}
-            className="w-9/12 mt-4 rounded overflow-hidden shadow-lg"
-          >
-            <img
-              className="w-full p-4"
-              src={group.Image}
-              alt="Sunset in the mountains"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">{group.Name}</div>
-              <p className="text-gray-700 text-base">{group.Description}</p>
+          <Link href={`/Group/${group.id}`} key={group.id}>
+            <div
+              key={group.id}
+              className="w-9/12 mt-4 rounded overflow-hidden shadow-lg"
+            >
+              <img
+                className="w-full p-4"
+                src={group.Image}
+                alt="Sunset in the mountains"
+              />
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">{group.Name}</div>
+                <p className="text-gray-700 text-base">{group.Description}</p>
+              </div>
+              <div className="px-6 pt-4 pb-2">
+                {group.Tags.map((tag) => {
+                  return (
+                    <span
+                      key={tag}
+                      className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+                    >
+                      #{tag}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
-            <div className="px-6 pt-4 pb-2">
-              {group.Tags.map((tag) => {
-                return (
-                  <span
-                    key={tag}
-                    className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-                  >
-                    #{tag}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
+          </Link>
         );
       })}
     </div>
