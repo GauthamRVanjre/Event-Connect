@@ -1,3 +1,4 @@
+import EventRegistrationModal from "@/components/EventRegistrationModal";
 import Navbar from "@/components/Navbar";
 import { db } from "@/firebase";
 import {
@@ -17,6 +18,15 @@ const IndividualGroup = () => {
   const router = useRouter();
   const [group, setGroup] = useState<DocumentData | null | Group>(null);
   const { id } = router.query;
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   console.log("id:", id);
 
@@ -86,10 +96,15 @@ const IndividualGroup = () => {
             </div>
           </div>
           <div className="flex flex-row justify-end mr-20">
-            <div className="py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600">
-              {/* Create a group */}
-              <Link href="/EventCreationForm">Create a new event+</Link>
-            </div>
+            {/* Create a new event */}
+            {/* <Link href="/EventCreationForm">Create a new event+</Link> */}
+            <button onClick={openModal}>Create a new event+</button>
+            {showModal && (
+              <EventRegistrationModal
+                groupId={id as string}
+                closeModal={closeModal}
+              />
+            )}
           </div>
         </div>
       </header>
