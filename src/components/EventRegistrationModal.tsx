@@ -46,14 +46,11 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
         eventEndDate: Timestamp.fromDate(new Date(eventEndDate)),
         eventLocation,
       };
-
-      console.log("eventData:", eventData);
-      console.log("eventCreateRef:", eventCreateRef);
+      await setDoc(eventCreateRef, eventData);
       setEventCreationSuccess(true);
 
-      await setDoc(eventCreateRef, eventData);
       console.log("Event created successfully");
-      // closeModal();
+      closeModal();
     } catch (error) {
       console.error("Error registering event:", error);
     }
@@ -204,6 +201,16 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
               </div>
             </div>
           </div>
+          {errorMessage && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
+              {errorMessage}
+            </div>
+          )}
+          {eventCreationSuccess && (
+            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
+              Login successful! Redirecting you to the homepage...
+            </div>
+          )}
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
               type="button"

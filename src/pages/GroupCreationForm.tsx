@@ -13,6 +13,8 @@ const GroupCreationForm = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null | Blob>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [groupCreationSuccess, setGroupCreationSuccess] = useState(false);
   const router = useRouter();
 
   const Tags: string[] = [
@@ -97,7 +99,7 @@ const GroupCreationForm = () => {
     }
 
     if (image === null) {
-      alert("Image is null");
+      setErrorMessage("Image is null");
     }
 
     const imageRef = ref(storage, `images/${image?.name + v4()}`);
@@ -107,8 +109,6 @@ const GroupCreationForm = () => {
         handleUpload(url);
       });
     });
-
-    // // adding data to firestore
   };
 
   const handleUpload = async (url: any) => {
@@ -128,7 +128,12 @@ const GroupCreationForm = () => {
     setName("");
     setDescription("");
     setImage(null);
-    alert("Group created successfully");
+    setGroupCreationSuccess(true);
+
+    // Redirect to home page
+    setTimeout(() => {
+      router.push("/");
+    }, 3000);
   };
 
   const handleLocationChange = (e: any) => {
@@ -261,6 +266,16 @@ const GroupCreationForm = () => {
           >
             Create
           </button>
+          {errorMessage && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
+              {errorMessage}
+            </div>
+          )}
+          {groupCreationSuccess && (
+            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
+              group creation successful! Redirecting you to the homepage...
+            </div>
+          )}
         </form>
       </div>
     </>
