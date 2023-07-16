@@ -24,7 +24,9 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
   const registerEvent = async () => {
     try {
       const eventId = uuidv4(); // Generate a unique ID using UUID
-      const eventCreateRef = doc(db, "Groups", groupId, "Events", eventId);
+      const groupRef = doc(db, "Groups", groupId);
+
+      console.log("groupRef: ", groupRef);
 
       if (
         !eventName ||
@@ -39,6 +41,7 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
       }
 
       const eventData = {
+        groupRefrence: groupRef,
         eventName,
         eventHostName,
         eventDetails,
@@ -46,11 +49,18 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
         eventEndDate: Timestamp.fromDate(new Date(eventEndDate)),
         eventLocation,
       };
-      await setDoc(eventCreateRef, eventData);
+
+      const eventsCollectionRef = collection(db, "Events");
+      const eventRef = doc(eventsCollectionRef); // Auto-generated document ID
+
+      await setDoc(eventRef, eventData);
+
       setEventCreationSuccess(true);
 
       console.log("Event created successfully");
-      closeModal();
+      setTimeout(() => {
+        closeModal();
+      }, 3000);
     } catch (error) {
       console.error("Error registering event:", error);
     }
@@ -208,7 +218,7 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
           )}
           {eventCreationSuccess && (
             <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
-              Login successful! Redirecting you to the homepage...
+              Event Creation successful! Closing this modal...
             </div>
           )}
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
