@@ -11,22 +11,28 @@ const Events = () => {
       const events = eventsCollection.docs.map((doc) => doc.data());
       setEvents(events);
       console.log("Events:", events);
+      console.log("group image", events[0].groupRefrence.id);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
   };
 
   useEffect(() => {
-    // fetchEvents();
+    fetchEvents();
   }, []);
   return (
     <div className="flex flex-col">
-      <div className="w-9/12 mt-4 rounded overflow-hidden shadow-lg">
-        <div className="px-6 py-4">
-          <div className="font-bold text-xl mb-2">Event Name</div>
-          <p className="text-gray-700 text-base">Event Description</p>
+      {events.map((event: any) => (
+        <div
+          key={event.id}
+          className="w-9/12 mt-4 rounded overflow-hidden shadow-lg"
+        >
+          <div className="w-3/12">
+            {/* <img src={event.groupRefrence.Image} alt="group image" /> */}
+          </div>
+          <div></div>
         </div>
-      </div>
+      ))}
     </div>
   );
 };
