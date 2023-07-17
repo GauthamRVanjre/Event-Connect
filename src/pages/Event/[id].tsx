@@ -34,6 +34,14 @@ const EventDetailsPage = () => {
     seconds: number;
   };
 
+  const validateRSVP = () => {
+    if (event?.attendees.includes(user as string)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const fetchEventDetails = async () => {
     try {
       // Reference the Firestore collection and document
@@ -138,22 +146,36 @@ const EventDetailsPage = () => {
           </div>
           <div className="mt-10 pl-20 text-2xl">
             Event Attenders - {event?.attendees.length}
+            <div>
+              {event?.attendees.map((attender: string, index: number) => (
+                <button
+                  key={index}
+                  className="text-2xl p-2 bg-gray-500 mt-5 ml-2 rounded-full"
+                >
+                  {/* {attender.slice(0, 1).toUpperCase()} */}
+                  {attender
+                    .split(" ")
+                    .map((name) => name.charAt(0).toUpperCase())
+                    .join("")}
+                </button>
+              ))}
+            </div>
           </div>
-          <div>
-            {event?.attendees.map((attender: string, index: number) => (
-              <span key={index} className="text-2xl mt-5 ml-20">
-                {attender}
-              </span>
-            ))}
-          </div>
-          <div className="mt-4 ml-20">
-            <button
-              onClick={registerAttendee}
-              className="py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600"
-            >
-              RSVP
-            </button>
-          </div>
+
+          {validateRSVP() ? (
+            <div className="mt-4 ml-20 w-80 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
+              You have already registered for this event.
+            </div>
+          ) : (
+            <div className="mt-4 ml-20">
+              <button
+                onClick={registerAttendee}
+                className="py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600"
+              >
+                RSVP
+              </button>
+            </div>
+          )}
           {rsvpSuccess && (
             <div className="mt-4 ml-20 w-80 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
               RSVP Successful. Thank you for registering.
