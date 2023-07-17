@@ -14,7 +14,7 @@ const EventDetailsPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [event, setEvent] = useState<DocumentData | null | Event>(null);
-  const [user, setUser] = useState<string | null>("guest");
+  const [user, setUser] = useState<string | null>(null);
   const [rsvpSuccess, setRsvpSuccess] = useState(false);
   const [rsvpError, setRsvpError] = useState(false);
 
@@ -41,6 +41,8 @@ const EventDetailsPage = () => {
       return false;
     }
   };
+
+  console.log(event?.attendees);
 
   const fetchEventDetails = async () => {
     try {
@@ -72,15 +74,15 @@ const EventDetailsPage = () => {
     try {
       if (localStorage.getItem("user") !== null) {
         console.log("User is logged in");
+        const eventRef = doc(db, "Events", id as string);
+        await updateDoc(eventRef, {
+          attendees: [...event?.attendees, user],
+        });
+        setRsvpSuccess(true);
       } else {
         console.log("User is not logged in");
         router.push("/Login");
       }
-      const eventRef = doc(db, "Events", id as string);
-      await updateDoc(eventRef, {
-        attendees: [...event?.attendees, user],
-      });
-      setRsvpSuccess(true);
     } catch (error) {
       console.log("Error:", error);
       setRsvpError(true);

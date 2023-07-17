@@ -61,7 +61,7 @@ const Events = () => {
                 />
               </div>
               <div className="w-6/12">
-                <div className="px-12 py-4">
+                <div className="px-12 py-4 md:px-4 py-2">
                   <div className="font-bold text-xl mb-2">
                     {event.eventName}
                   </div>
@@ -72,10 +72,10 @@ const Events = () => {
               </div>
               <div className="w-3/12">
                 <div className="px-6 py-4">
-                  <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                  <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 md:mb-1">
                     Start- {handleDate(event.eventStartDate.seconds)}
                   </span>
-                  <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                  <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 md:mb-1">
                     End- {handleDate(event.eventEndDate.seconds)}
                   </span>
                 </div>
