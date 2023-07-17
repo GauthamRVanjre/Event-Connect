@@ -23,7 +23,11 @@ export default function Home() {
         <h1 className="flex-grow-0 text-3xl font-bold">Hello, {user}</h1>
         <div className="py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600">
           {/* Create a group */}
-          <Link href="/GroupCreationForm">Create a new group+</Link>
+          {user !== "guest" ? (
+            <Link href="/GroupCreationForm">Create a new group+</Link>
+          ) : (
+            <Link href="/Login">Create a new group+</Link>
+          )}
         </div>
       </div>
 
