@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 import { Timestamp, collection, doc, setDoc } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
+import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 
 type EventRegistrationModalProps = {
   groupId: string; // Pass the group ID as a prop
@@ -15,15 +16,30 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
   const [eventName, setEventName] = useState("");
   const [eventHostName, setEventHostName] = useState("");
   const [eventDetails, setEventDetails] = useState("");
+  const [image, setImage] = useState<File | null | Blob>(null);
   const [eventStartDate, setEventStartData] = useState<Date>();
   const [eventEndDate, setEventEndDate] = useState<Date>();
   const [eventLocation, setEventLocation] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [eventCreationSuccess, setEventCreationSuccess] = useState(false);
 
-  const registerEvent = async () => {
+  const handleImageUpload = async (e: any) => {
+    if (image === null) {
+      setErrorMessage("Image is null");
+      return;
+    } else {
+      const imageRef = ref(storage, `eventImages/${image?.name + v4()}`);
+      console.log("imageRef", imageRef);
+      uploadBytes(imageRef, image as Blob).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          registerEvent(url);
+        });
+      });
+    }
+  };
+
+  const registerEvent = async (url: any) => {
     try {
-      const eventId = uuidv4(); // Generate a unique ID using UUID
       const groupRef = doc(db, "Groups", groupId);
 
       console.log("groupRef: ", groupRef);
@@ -47,6 +63,7 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
         eventDetails,
         eventStartDate: Timestamp.fromDate(new Date(eventStartDate)),
         eventEndDate: Timestamp.fromDate(new Date(eventEndDate)),
+        eventImage: url,
         eventLocation,
       };
 
@@ -56,6 +73,14 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
       await setDoc(eventRef, eventData);
 
       setEventCreationSuccess(true);
+
+      setEventName("");
+      setEventHostName("");
+      setEventDetails("");
+      setEventStartData(new Date());
+      setEventEndDate(new Date());
+      setEventLocation("");
+      setImage(null);
 
       console.log("Event created successfully");
       setTimeout(() => {
@@ -189,6 +214,20 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
                       />
                     </div>
                   </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="image"
+                      className="block text-gray-700 font-bold mb-2"
+                    >
+                      Image:
+                    </label>
+                    <input
+                      type="file"
+                      id="image"
+                      onChange={(e) => setImage(e.target.files![0])}
+                      className="w-full px-3 py-2 border border-gray-300 rounded"
+                    />
+                  </div>
 
                   {/* Event Location */}
                   <div className="mb-4">
@@ -225,7 +264,7 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
             <button
               type="button"
               className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={registerEvent}
+              onClick={handleImageUpload}
             >
               Register
             </button>
