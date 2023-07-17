@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { DocumentData, collection, doc, getDoc } from "@firebase/firestore";
-import { db } from "@/firebase";
+import {
+  DocumentData,
+  collection,
+  doc,
+  getDoc,
+  updateDoc,
+} from "@firebase/firestore";
+import { auth, db } from "@/firebase";
 import Navbar from "@/components/Navbar";
 
 const EventDetailsPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [event, setEvent] = useState<DocumentData | null | Event>(null);
+  const [user, setUser] = useState<string | null>("guest");
+  const [rsvpSuccess, setRsvpSuccess] = useState(false);
+  const [rsvpError, setRsvpError] = useState(false);
 
   type Event = {
     id: string;
@@ -18,6 +27,7 @@ const EventDetailsPage = () => {
     eventImage: string;
     eventStartDate: EventDate;
     eventEndDate: EventDate;
+    attendees: string[];
   };
 
   type EventDate = {
@@ -50,6 +60,38 @@ const EventDetailsPage = () => {
     return date.toLocaleDateString();
   };
 
+  const registerAttendee = async () => {
+    if (localStorage.getItem("user") !== null) {
+      console.log("User is logged in");
+      console.log("User:", localStorage.getItem("user"));
+      console.log("email", auth.currentUser?.email);
+    } else {
+      console.log("User is not logged in");
+      router.push("/Login");
+    }
+
+    try {
+      const eventRef = doc(db, "Events", id as string);
+      await updateDoc(eventRef, {
+        attendees: [...event?.attendees, user],
+      });
+      setRsvpSuccess(true);
+    } catch (error) {
+      console.log("Error:", error);
+      setRsvpError(true);
+    }
+    console.log("attender", user);
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    // localStorage.removeItem("user");
+  }, []);
+
+  console.log("user", user);
   useEffect(() => {
     fetchEventDetails();
   }, [id]);
@@ -94,6 +136,34 @@ const EventDetailsPage = () => {
           <div>
             <p className="text-2xl mt-5 ml-20">{event?.eventDetails}</p>
           </div>
+          <div className="mt-10 pl-20 text-2xl">
+            Event Attenders - {event?.attendees.length}
+          </div>
+          <div>
+            {event?.attendees.map((attender: string, index: number) => (
+              <span key={index} className="text-2xl mt-5 ml-20">
+                {attender}
+              </span>
+            ))}
+          </div>
+          <div className="mt-4 ml-20">
+            <button
+              onClick={registerAttendee}
+              className="py-2 px-4 bg-gray-800 text-white rounded hover:bg-gray-600"
+            >
+              RSVP
+            </button>
+          </div>
+          {rsvpSuccess && (
+            <div className="mt-4 ml-20 w-80 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mt-4">
+              RSVP Successful. Thank you for registering.
+            </div>
+          )}
+          {rsvpError && (
+            <div className="mt-4 ml-20 w-80 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 mt-4">
+              RSVP Failed. Please try again later.
+            </div>
+          )}
         </div>
         <div className="w-3/12 text-2xl mr-10">
           <div className="mt-10 text-2xl">
