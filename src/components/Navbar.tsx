@@ -1,9 +1,25 @@
+import { auth } from "@/firebase";
+import { signOut } from "@firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      setIsLoggedIn(false);
+      console.log("User has been logged out");
+      window.location.reload();
+      // Perform any additional actions after successful logout
+    } catch (error) {
+      console.error("Error logging out:", error);
+      // Handle any errors that occurred during logout
+    }
+  };
 
   useEffect(() => {
     if (localStorage.getItem("user") !== null) {
@@ -41,9 +57,13 @@ const Navbar = () => {
           {/* Login and Sign Up Buttons */}
           <div className="flex space-x-4">
             {isLoggedIn ? (
-              <Link href="/logout">Logout</Link>
+              <button onClick={handleLogout} className="text-white">
+                Logout
+              </button>
             ) : (
-              <Link href="/login">Login</Link>
+              <Link href="/login">
+                <p className="text-white">Login</p>
+              </Link>
             )}
             <Link href="/signUp">
               <p className="text-white">Sign Up</p>

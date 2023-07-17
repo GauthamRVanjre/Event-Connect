@@ -69,14 +69,13 @@ const EventDetailsPage = () => {
   };
 
   const registerAttendee = async () => {
-    if (localStorage.getItem("user") !== null) {
-      console.log("User is logged in");
-    } else {
-      console.log("User is not logged in");
-      router.push("/Login");
-    }
-
     try {
+      if (localStorage.getItem("user") !== null) {
+        console.log("User is logged in");
+      } else {
+        console.log("User is not logged in");
+        router.push("/Login");
+      }
       const eventRef = doc(db, "Events", id as string);
       await updateDoc(eventRef, {
         attendees: [...event?.attendees, user],
