@@ -19,9 +19,16 @@ const IndividualGroup = () => {
   const [group, setGroup] = useState<DocumentData | null | Group>(null);
   const { id } = router.query;
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState<string | null>("guest");
 
-  const openModal = () => {
-    setShowModal(true);
+  const openModal = async () => {
+    if (localStorage.getItem("user") !== null) {
+      console.log("User is logged in");
+      setShowModal(true);
+    } else {
+      console.log("User is not logged in");
+      router.push("/Login");
+    }
   };
 
   const closeModal = () => {
@@ -59,6 +66,13 @@ const IndividualGroup = () => {
       console.log("Error getting document:", error);
     }
   };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     fetchGroupDetails();

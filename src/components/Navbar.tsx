@@ -1,7 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("user") !== null) {
+      console.log("User is logged in");
+      setIsLoggedIn(true);
+    } else {
+      console.log("User is not logged in");
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   return (
     <nav className="bg-gray-800">
       <div className="max-w-9xl mx-auto px-2 sm:px-6 lg:px-4">
@@ -27,9 +40,11 @@ const Navbar = () => {
 
           {/* Login and Sign Up Buttons */}
           <div className="flex space-x-4">
-            <Link href="/Login">
-              <p className="text-white">Login</p>
-            </Link>
+            {isLoggedIn ? (
+              <Link href="/logout">Logout</Link>
+            ) : (
+              <Link href="/login">Login</Link>
+            )}
             <Link href="/signUp">
               <p className="text-white">Sign Up</p>
             </Link>

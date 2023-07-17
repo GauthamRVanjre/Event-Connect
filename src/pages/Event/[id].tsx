@@ -71,8 +71,6 @@ const EventDetailsPage = () => {
   const registerAttendee = async () => {
     if (localStorage.getItem("user") !== null) {
       console.log("User is logged in");
-      console.log("User:", localStorage.getItem("user"));
-      console.log("email", auth.currentUser?.email);
     } else {
       console.log("User is not logged in");
       router.push("/Login");
