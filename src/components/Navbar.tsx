@@ -1,7 +1,36 @@
+import { auth } from "@/firebase";
+import { signOut } from "@firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      setIsLoggedIn(false);
+      console.log("User has been logged out");
+      window.location.reload();
+      // Perform any additional actions after successful logout
+    } catch (error) {
+      console.error("Error logging out:", error);
+      // Handle any errors that occurred during logout
+    }
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("user") !== null) {
+      console.log("User is logged in");
+      setIsLoggedIn(true);
+    } else {
+      console.log("User is not logged in");
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   return (
     <nav className="bg-gray-800">
       <div className="max-w-9xl mx-auto px-2 sm:px-6 lg:px-4">
@@ -27,9 +56,15 @@ const Navbar = () => {
 
           {/* Login and Sign Up Buttons */}
           <div className="flex space-x-4">
-            <Link href="/Login">
-              <p className="text-white">Login</p>
-            </Link>
+            {isLoggedIn ? (
+              <button onClick={handleLogout} className="text-white">
+                Logout
+              </button>
+            ) : (
+              <Link href="/login">
+                <p className="text-white">Login</p>
+              </Link>
+            )}
             <Link href="/signUp">
               <p className="text-white">Sign Up</p>
             </Link>

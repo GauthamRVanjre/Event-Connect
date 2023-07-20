@@ -65,6 +65,7 @@ const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({
         eventEndDate: Timestamp.fromDate(new Date(eventEndDate)),
         eventImage: url,
         eventLocation,
+        attendees: [],
       };
 
       const eventsCollectionRef = collection(db, "Events");
