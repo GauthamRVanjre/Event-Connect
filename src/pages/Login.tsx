@@ -38,6 +38,7 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setLoginSuccess(true);
+      setErrorMessage("");
 
       // Get user from the database
       const usersCollection = collection(db, "users");
@@ -66,6 +67,7 @@ const Login = () => {
     try {
       await signInWithPopup(auth, provider);
       setLoginSuccess(true);
+      setErrorMessage("");
 
       localStorage.setItem(
         "user",
